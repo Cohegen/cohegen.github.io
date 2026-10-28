@@ -1,53 +1,95 @@
-# Understanding GPU basics
-As you're probably reading this, you're most likely aware that we're living in the age of the AI boom. Large Language Models like ChatGPT, Claude, Deepseek etc are widely used by a lot of users. However, have you ever sat down and asked yourself in which hardware these LLMs run on?
+# Understanding GPU Basics
 
-These LLMS run on specialized chips (processors) known as GPUs(Graphical Processing Units). In this blog I'm tasked with enabling you the reader to understand what a GPU is and how it differs from a CPU(Central Processing Unit).
+As you're probably aware, we're living in the age of the AI boom. Large Language Models (LLMs) like ChatGPT, Claude, and DeepSeek are widely used by millions of people. However, have you ever sat down and asked yourself what kind of hardware these LLMs run on?
 
-Without further a do let's begin our quest of understanding what this GPU is.
+These LLMs primarily run on specialized processors known as GPUs (Graphics Processing Units). In this blog, my goal is to help you, the reader, understand what a GPU is and how it differs from a CPU (Central Processing Unit).
+
+Without further ado, let's begin our quest to understand what a GPU is.
 
 ## 1. GPU vs CPU
-Think of a CPU as a master chef whose can make a variety of meals like ugali and cabbage, rice and stew, fried chicken etc and at the same time think of a GPU as thousands of chefs who can make the same meal like for example ugali and cabbage.
 
-Let's go back in time from your high school life. I'm pretty sure majority of you in highschool had ugali and cabbage for lunch. Taking the role of a school principal would you hire one master chef or hire say around 20 chefs who cook ugali and cabbage quickly enough to meet the demand of the highschool students? The answer is pretty simple, you would hire those 20 chefs since they would be much quicker than that one master chef.
+Think of a CPU as a master chef who can prepare a variety of meals, such as ugali and cabbage, rice and stew, fried chicken, etc. At the same time, think of a GPU as thousands of chefs who can work together to prepare large quantities of the same meal, such as ugali and cabbage.
 
-### CPU and GPU architecture
-![output:](diagram.png)
+Let's go back to your high school days. I'm pretty sure the majority of you had ugali and cabbage for lunch.
 
-- From out analogy from the previous section, we can think of chefs as being represented by the cores in the above diagram.
-- These cores are responsible for reading and executing instructions. You can think of instructions as commands given to a computer to direct it to do a certain task.
-- 
-Say we have two vector of 100 elements each. Between the CPU and GPU, among the two which one do you think would be faster than the other? The GPU would be faster since we can clearly see that it has more cores than the CPU. A core is a physical hardware component responsible for the execution of instructions.
+Imagine you're a school principal. Would you hire one master chef or, say, 20 chefs who can prepare ugali and cabbage quickly enough to meet the demands of the high school students?
+
+The answer is pretty simple. You would hire those 20 chefs since they could prepare the meals much faster than one master chef.
+
+This is the basic idea behind GPUs: performing many similar operations in parallel.
+
+### CPU and GPU Architecture
+
+![CPU vs GPU Architecture](diagram.png)
+
+* From our analogy in the previous section, we can think of the chefs as representing the cores in the diagram above.
+* These cores are responsible for executing instructions. You can think of instructions as commands that tell a processor to perform a particular operation.
+* CPUs typically have fewer, more powerful cores, while GPUs have many simpler execution cores designed to handle large amounts of parallel work.
+
+Say we have two vectors containing 100 elements each. Between the CPU and GPU, which one do you think would be faster at adding these vectors?
+
+A GPU is designed to perform operations on many elements simultaneously, making it particularly suitable for this kind of task.
+
+However, for such a small workload, a CPU might actually be faster because transferring data to the GPU and launching a kernel introduces additional overhead.
+
+For now, let's focus on how both processors execute the addition.
 
 ### Execution Process
-- Let's have a scenario in which  our GPU had 100 cores and our CPU had 1 core, and we are tasked to add two vectors with 100 elements each.
-- Let's name these two vectors A and B, their sum will be stored in C.
-- For a our CPU code, we'll use an ordinary for loop shown below.
+
+Let's consider a simplified scenario in which our GPU has 100 cores and our CPU has only one core. We're tasked with adding two vectors containing 100 elements each.
+
+Let's name these vectors A and B. Their sum will be stored in vector C.
+
+For our CPU code, we'll use an ordinary `for` loop, as shown below.
 
 ```cpp
-void sequential_vector_addition(float*A,float*B,float*C,int N)
+void sequential_vector_addition(float* A, float* B, float* C, int N)
 {
-  for(int i=0;i<N;++i)
-{
-  C[i] = A[i] + B[i]
+    for (int i = 0; i < N; ++i)
+    {
+        C[i] = A[i] + B[i];
+    }
 }
-}
-
 ```
-- From the above code we can see that this for-loop that 100 iterations meaning this loop will go on for 100 rounds so that we finally have the sum of the two vectors in C.
 
-- Our GPU code will be written in a language known as CUDA and the code is shown below:
+From the code above, we can see that the `for` loop performs 100 iterations when `N = 100`. This means the loop goes through 100 iterations to calculate the sum of the two vectors and store the results in C.
+
+For simplicity, we'll assume that each iteration is executed sequentially.
+
+Our GPU code will be written using CUDA, a parallel computing platform and programming model developed by NVIDIA.
+
+The code is shown below:
+
 ```cpp
-__global__ void vector_addition(float *A,float*B ,float* C,int N)
+__global__ void vector_addition(float* A, float* B, float* C, int N)
 {
-  int index = threadIdx.x;
-  if(index <N)
-  {
-    C[index] = A[index] + B[index];
-  }
+    int index = threadIdx.x;
+
+    if (index < N)
+    {
+        C[index] = A[index] + B[index];
+    }
 }
 ```
-- From the code above, I've written a function known as a **kernel**. A kernel is a function is executed on the GPU, that why it has the keyword `__global__` indicating that it will be executed on the GPU. The arguments of the kernel are our vector A, B  and C and the length of our vector `N` which is 100.
--  There's also and index variable called and it's been assigned a value of `threadIdx.x` which means the coordinate of an individual thread along the `x` axis. Each thread will responsible for calculating the sum of one element.
-- The if-statements makes sure that threads whose indices are less than 100 will be active in the sum calculation.
-- The line `C[index] = A[index] + B[index]` means the threads o id 0 to 99 will perform the addittion.
-- So we can see that the vector addition in a GPU only goes for one round since there are many threads which perform addition in parallel. Hence that's why it's much faster than the CPU since the has only 1 thread hence it requires 100 rounds to execute sequentially.
+
+* From the code above, I've written a function known as a **kernel**. A kernel is a function that executes on the GPU. The `__global__` keyword indicates that the function is a GPU kernel that can be launched from the CPU.
+
+* The arguments of our kernel are vectors A, B, and C, along with the number of elements, `N`, which is 100 in our example.
+
+* There's also a variable called `index`, which is assigned the value of `threadIdx.x`. This represents the index of an individual thread within a block along the x-axis.
+
+* Each thread is responsible for calculating the sum of one pair of elements from vectors A and B.
+
+* The `if` statement ensures that only threads whose indices are less than `N` perform the addition. This prevents threads from accessing elements outside our vectors.
+
+* The line `C[index] = A[index] + B[index];` means that threads with indices from 0 to 99 will each calculate the sum of one pair of elements.
+
+For this example, we'll assume that we launch a single block containing 100 threads.
+
+Unlike our sequential CPU example, where one thread performs 100 iterations, our GPU kernel allows 100 threads to perform the additions in parallel.
+
+This means the GPU can process multiple elements simultaneously instead of relying on a single thread to perform every addition.
+
+However, this doesn't necessarily mean all 100 operations execute at exactly the same instant or that the GPU will always be faster.
+
+The main takeaway is that **GPUs are designed to achieve high throughput by executing many similar operations in parallel.**
