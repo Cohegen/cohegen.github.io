@@ -30,7 +30,7 @@ Say we have two vectors containing 100 elements each. Between the CPU and GPU, w
 
 A GPU is designed to perform operations on many elements simultaneously, making it particularly suitable for this kind of task.
 
-However, for such a small workload, a CPU might actually be faster because transferring data to the GPU and launching a kernel introduces additional overhead.
+However, for such a small workload, a CPU might actually be faster because transferring data to the GPU and launching a kernel introduces additional overhead/ more work .
 
 For now, let's focus on how both processors execute the addition.
 
