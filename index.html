@@ -1,819 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anthony Njenga | Systems &amp; Performance Engineer</title>
-  <meta name="description" content="Personal website of Anthony Njenga — aspiring Systems and Performance Engineer specializing in low-level systems, C++, CUDA GPU computing, and computer architecture." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthony Njenga</title>
   <style>
-    :root {
-      --bg: #0d1117;
-      --card-bg: #161b22;
-      --card-border: #30363d;
-      --text: #e6edf3;
-      --text-muted: #8b949e;
-      --accent: #58a6ff;
-      --accent-hover: #79c0ff;
-      --accent-glow: rgba(88, 166, 255, 0.15);
-      --badge-bg: #21262d;
-      --badge-border: #363b42;
-      --code-bg: #1f242c;
-      --nav-bg: rgba(13, 17, 23, 0.85);
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Header & Navigation */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--nav-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .nav-container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0.9rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: var(--text);
-    }
-
-    .brand-name {
-      font-weight: 700;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-    }
-
-    .brand-role {
-      font-size: 0.78rem;
-      color: var(--accent);
-      background: var(--accent-glow);
-      border: 1px solid rgba(88, 166, 255, 0.3);
-      padding: 0.15rem 0.55rem;
-      border-radius: 9999px;
-      font-family: var(--font-mono);
-      font-weight: 500;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .nav-tab {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      font-weight: 500;
-      padding: 0.45rem 0.9rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .nav-tab:hover {
-      color: var(--text);
-      background-color: var(--badge-bg);
-    }
-
-    .nav-tab.active {
-      color: #ffffff;
-      background-color: var(--badge-bg);
-      border: 1px solid var(--card-border);
-    }
-
-    .github-link {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      padding: 0.45rem 0.75rem;
-      border-radius: 6px;
-      border: 1px solid var(--card-border);
-      font-size: 0.88rem;
-      transition: all 0.15s ease;
-      margin-left: 0.5rem;
-    }
-
-    .github-link:hover {
-      color: var(--text);
-      border-color: var(--text-muted);
-      background: var(--card-bg);
-    }
-
-    /* Main Container */
-    main {
-      flex: 1;
-      max-width: 960px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 4rem;
-    }
-
-    /* Tab Panels */
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.2s ease-in-out;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Typography & Hero */
-    .hero {
-      padding: 1.5rem 0 2.5rem;
-      border-bottom: 1px solid var(--card-border);
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-eyebrow {
-      color: var(--accent);
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #3fb950;
-      border-radius: 50%;
-      display: inline-block;
-      box-shadow: 0 0 8px rgba(63, 185, 80, 0.6);
-    }
-
-    .hero-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-      background: linear-gradient(180deg, #ffffff 0%, #c9d1d9 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-bio {
-      font-size: 1.15rem;
-      color: #c9d1d9;
-      line-height: 1.7;
-      max-width: 780px;
-      margin-bottom: 1.75rem;
-    }
-
-    .hero-bio strong {
-      color: #ffffff;
-      font-weight: 600;
-    }
-
-    .cta-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.85rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.65rem 1.25rem;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border-radius: 6px;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      border: 1px solid transparent;
-    }
-
-    .btn-primary {
-      background-color: #238636;
-      color: #ffffff;
-      border-color: rgba(240, 246, 252, 0.1);
-    }
-
-    .btn-primary:hover {
-      background-color: #2ea043;
-    }
-
-    .btn-secondary {
-      background-color: var(--card-bg);
-      color: var(--text);
-      border-color: var(--card-border);
-    }
-
-    .btn-secondary:hover {
-      background-color: var(--badge-bg);
-      border-color: var(--text-muted);
-    }
-
-    /* Section Headings */
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.5rem;
-    }
-
-    .section-subtitle {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.75rem;
-    }
-
-    /* Grid & Cards */
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-
-    @media (min-width: 680px) {
-      .grid-2 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card:hover {
-      border-color: #58a6ff;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .card-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--accent);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .card-title:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
-    }
-
-    .card-tagline {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      margin-bottom: 0.75rem;
-    }
-
-    .card-desc {
-      color: #c9d1d9;
-      font-size: 0.92rem;
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
-      flex: 1;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid rgba(48, 54, 61, 0.5);
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-
-    .tag {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      background: var(--badge-bg);
-      border: 1px solid var(--badge-border);
-      color: var(--text-muted);
-    }
-
-    .card-link {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--accent);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .card-link:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
-    }
-
-    /* Skills / Domains Section on Home */
-    .domains-section {
-      margin-top: 2rem;
-    }
-
-    .domain-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1.25rem;
-    }
-
-    .domain-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .domain-desc {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Blog Specific */
-    .blog-item {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1.75rem;
-      transition: all 0.2s ease;
-      margin-bottom: 1.25rem;
-    }
-
-    .blog-item:hover {
-      border-color: #58a6ff;
-      transform: translateY(-2px);
-    }
-
-    .blog-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .blog-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 0.65rem;
-    }
-
-    .blog-title a {
-      color: var(--text);
-      text-decoration: none;
-    }
-
-    .blog-title a:hover {
-      color: var(--accent);
-    }
-
-    .blog-summary {
-      color: #c9d1d9;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--card-border);
-      padding: 2rem 1.5rem;
-      text-align: center;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-top: auto;
-    }
-
-    footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
+    body { font-family: Arial, sans-serif; line-height: 1.7; color: #222; background: white; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1, h2, h3 { line-height: 1.3; color: #111; }
+    h1 { font-size: 2rem; }
+    h2 { margin-top: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+    h3 { margin-top: 1.5rem; }
+    a { color: #0969da; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    nav { margin-bottom: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.75rem; }
+    nav a { margin-right: 1.5rem; font-weight: bold; }
+    nav a.active { border-bottom: 2px solid #0969da; padding-bottom: 0.5rem; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .project { margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #ddd; border-radius: 6px; }
+    .project h3 { margin-top: 0; }
+    .project p { margin: 0.4rem 0; }
+    .tags span { font-size: 0.8rem; background: #f5f5f5; border: 1px solid #ddd; padding: 2px 6px; border-radius: 3px; margin-right: 4px; }
+    .blog-entry { margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #ddd; border-radius: 6px; }
+    .blog-entry h3 { margin-top: 0; }
+    .blog-meta { font-size: 0.85rem; color: #666; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.85rem; color: #666; }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation Header -->
-  <header>
-    <div class="nav-container">
-      <a href="#home" class="brand" onclick="switchTab('home')">
-        <span class="brand-name">Anthony Njenga</span>
-        <span class="brand-role">Systems &amp; Performance</span>
-      </a>
+<h1>Anthony Njenga</h1>
+<nav>
+  <a href="#home" class="active" onclick="switchTab('home')">Home</a>
+  <a href="#blogs" onclick="switchTab('blogs')">Blogs</a>
+  <a href="#projects" onclick="switchTab('projects')">Projects</a>
+  <a href="https://github.com/Cohegen" target="_blank">GitHub</a>
+</nav>
 
-      <nav>
-        <button class="nav-tab active" id="tab-btn-home" onclick="switchTab('home')">Home</button>
-        <button class="nav-tab" id="tab-btn-blogs" onclick="switchTab('blogs')">Blogs</button>
-        <button class="nav-tab" id="tab-btn-projects" onclick="switchTab('projects')">Projects</button>
-        <a href="https://github.com/Cohegen" target="_blank" rel="noopener noreferrer" class="github-link" title="GitHub Profile">
-          <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
-          </svg>
-          <span>GitHub</span>
-        </a>
-      </nav>
-    </div>
-  </header>
+<!-- Home Tab -->
+<div id="tab-home" class="tab active">
+  <h2>About Me</h2>
+  <p>Hi, I'm <strong>Anthony Njenga</strong>. I'm an aspiring <strong>systems and performance engineer</strong> with a deep interest in computer architecture and GPU computing.</p>
+  <p>I'm passionate about writing low-level software that extracts maximum hardware efficiency — from cycle-accurate CPU microarchitecture simulations and hardware logic design in modern C++ to high-throughput CUDA kernels and deep learning systems from scratch.</p>
+  <p>I'm aspiring to work in <strong>Systems &amp; Performance Engineering</strong>, <strong>High-Performance Computing (HPC)</strong>, and <strong>GPU Kernel Engineering</strong>.</p>
 
-  <!-- Main Content Area -->
-  <main>
+  <h2>What I Work On</h2>
+  <ul>
+    <li><strong>Computer Architecture &amp; CPU Simulation</strong> — Designing and modeling processor microarchitectures in C++20: superscalar out-of-order execution, branch prediction, fetch/dispatch units, Reorder Buffers, Issue Queues, and Physical Register Files.</li>
+    <li><strong>GPU Computing &amp; CUDA</strong> — Writing and profiling high-throughput CUDA kernels on NVIDIA hardware. Parallel prefix scans, reductions, and memory coalescing optimizations.</li>
+    <li><strong>Digital Logic &amp; Hardware Modeling</strong> — Simulating fundamental hardware building blocks from the ground up: wires, tri-state buses, clock domains, combinational datapaths, and sequential logic circuits.</li>
+    <li><strong>Deep Learning Systems</strong> — Building lightweight tensor computation engines, reverse-mode automatic differentiation, attention layers, and model quantization strategies from scratch.</li>
+  </ul>
+</div>
 
-    <!-- ========================================== -->
-    <!-- TAB 1: HOME -->
-    <!-- ========================================== -->
-    <section id="tab-home" class="tab-content active">
-      <div class="hero">
-        <div class="hero-eyebrow">
-          <span class="status-dot"></span> Aspiring Systems &amp; Performance Engineer
-        </div>
-        <h1 class="hero-title">Engineering High-Performance Systems &amp; Compute Architecture</h1>
-        <p class="hero-bio">
-          Hi, I'm <strong>Anthony Njenga</strong>. I'm an aspiring <strong>systems and performance engineer</strong> with a deep interest in computer architecture and GPU computing. I'm passionate about writing low-level software that extracts maximum hardware efficiency — from cycle-accurate CPU microarchitecture simulations and hardware logic design in modern C++ to high-throughput CUDA kernels and deep learning systems from scratch.
-        </p>
-        <p class="hero-bio" style="font-size: 1rem; color: #8b949e; margin-top: -0.75rem;">
-          I'm aspiring to work in <strong>Systems &amp; Performance Engineering</strong>, <strong>High-Performance Computing (HPC)</strong>, and <strong>GPU Kernel Engineering</strong>.
-        </p>
+<!-- Blogs Tab -->
+<div id="tab-blogs" class="tab">
+  <h2>Blogs</h2>
 
-        <div class="cta-group">
-          <button class="btn btn-primary" onclick="switchTab('projects')">View Projects &rarr;</button>
-          <button class="btn btn-secondary" onclick="switchTab('blogs')">Read Blog Posts</button>
-          <a href="https://github.com/Cohegen" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-            GitHub Profile
-          </a>
-        </div>
-      </div>
+  <div class="blog-entry">
+    <h3><a href="blogs/gpu_basics.html">Understanding GPU Basics</a></h3>
+    <p class="blog-meta">October 2026 · GPU Architecture · CUDA</p>
+    <p>An intuitive breakdown of what GPUs are and how they differ from CPUs. Walks through core hierarchies and a CUDA vector addition kernel.</p>
+    <p><a href="blogs/gpu_basics.html">Read article →</a> · <a href="blogs/1.gpu_basics_plain.html">Plain HTML version</a></p>
+  </div>
+</div>
 
-      <!-- Core Technical Competencies -->
-      <div class="domains-section">
-        <h2 class="section-title">Core Engineering Focus</h2>
-        <p class="section-subtitle">Disciplines and areas of deep technical exploration.</p>
+<!-- Projects Tab -->
+<div id="tab-projects" class="tab">
+  <h2>Projects</h2>
 
-        <div class="grid grid-2">
-          <div class="domain-card">
-            <h3 class="domain-title">
-              <span style="color: #79c0ff;">⚡</span> Computer Architecture &amp; CPU Simulation
-            </h3>
-            <p class="domain-desc">
-              Designing and modeling processor microarchitectures in C++20: superscalar out-of-order execution, branch prediction, fetch/dispatch units, Reorder Buffers (ROB), Issue Queues, and Physical Register Files (PRF).
-            </p>
-          </div>
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/CPU.cpp" target="_blank">CPU.cpp</a></h3>
+    <p>Implements and benchmarks CPU microarchitecture designs in modern C++. Spans single-cycle and multi-cycle execution through superscalar out-of-order pipelines with fetch, dispatch, Reorder Buffer, Issue Queue, Physical Register File, and branch recovery.</p>
+    <div class="tags"><span>C++</span> <span>Computer Architecture</span> <span>Superscalar</span> <span>Out-of-Order</span></div>
+  </div>
 
-          <div class="domain-card">
-            <h3 class="domain-title">
-              <span style="color: #7ee787;">🚀</span> GPU Computing &amp; CUDA Acceleration
-            </h3>
-            <p class="domain-desc">
-              Writing and profiling high-throughput CUDA kernels on NVIDIA hardware. Implementing parallel prefix scans (Blelloch &amp; single-pass lookback), reductions, and latency-hiding memory optimizations.
-            </p>
-          </div>
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/Logic.cpp" target="_blank">Logic.cpp</a></h3>
+    <p>A modern C++20 hardware simulation library for modeling digital logic circuits from electrical primitives to complex architecture components. Models wires, buses, clocks, tri-state buffers, gates, combinational datapaths, and sequential storage elements.</p>
+    <div class="tags"><span>C++20</span> <span>Hardware Simulation</span> <span>Digital Logic</span></div>
+  </div>
 
-          <div class="domain-card">
-            <h3 class="domain-title">
-              <span style="color: #d2a8ff;">🧩</span> Digital Logic &amp; Hardware Modeling
-            </h3>
-            <p class="domain-desc">
-              Simulating fundamental hardware building blocks from the ground up: wires, tri-state buses, clock domain synchronization, combinational datapaths, and sequential logic circuits.
-            </p>
-          </div>
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/Kernels" target="_blank">Kernels</a></h3>
+    <p>Custom GPU kernel implementations tested on NVIDIA hardware (Tesla T4). Includes work-efficient parallel prefix scans (Blelloch &amp; single-pass with decoupled look-back), tree-based reductions, and memory coalescing optimizations.</p>
+    <div class="tags"><span>CUDA</span> <span>Parallel Algorithms</span> <span>GPU Computing</span> <span>HPC</span></div>
+  </div>
 
-          <div class="domain-card">
-            <h3 class="domain-title">
-              <span style="color: #ffa657;">🧠</span> Deep Learning Systems from Scratch
-            </h3>
-            <p class="domain-desc">
-              Building lightweight tensor computation engines, reverse-mode automatic differentiation (autodiff) runtimes, attention layers, and model quantization strategies.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/NanoTorch" target="_blank">NanoTorch</a></h3>
+    <p>A lightweight, ground-up deep learning library with a dynamic computation graph and reverse-mode automatic differentiation. Includes core neural network modules, attention mechanisms, and model quantization strategies.</p>
+    <div class="tags"><span>Deep Learning</span> <span>Autodiff</span> <span>Tensor Engine</span> <span>Quantization</span></div>
+  </div>
 
-    <!-- ========================================== -->
-    <!-- TAB 2: BLOGS -->
-    <!-- ========================================== -->
-    <section id="tab-blogs" class="tab-content">
-      <h1 class="section-title">Technical Blogs &amp; Writings</h1>
-      <p class="section-subtitle">Deep dives into computer systems, GPU architecture, and performance engineering.</p>
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/Computer-Vision-Models" target="_blank">Computer Vision Models</a></h3>
+    <p>Implementations and benchmarking of classical and modern computer vision architectures: DeepLabV3, UNet, DenseNet-121, MobileNetV1 &amp; V2, and SqueezeNet.</p>
+    <div class="tags"><span>Computer Vision</span> <span>PyTorch</span> <span>DeepLabV3</span> <span>UNet</span> <span>MobileNet</span></div>
+  </div>
+</div>
 
-      <!-- Featured Blog 1 -->
-      <article class="blog-item">
-        <div class="blog-meta">
-          <span>Blog #1</span>
-          <span>&bull;</span>
-          <span>October 2026</span>
-          <span>&bull;</span>
-          <span class="tag" style="color: #58a6ff;">GPU Architecture</span>
-          <span class="tag">CUDA</span>
-        </div>
-        <h2 class="blog-title">
-          <a href="blogs/gpu_basics.html">Understanding GPU Basics</a>
-        </h2>
-        <p class="blog-summary">
-          An intuitive breakdown of what GPUs are and how their hardware execution model fundamentally differs from CPUs. Compares latency-oriented CPUs with throughput-oriented massively parallel GPUs, explores core hierarchies, and walks through a CUDA vector addition kernel.
-        </p>
-        <div class="card-footer">
-          <div class="tags">
-            <span class="tag">Hardware</span>
-            <span class="tag">Parallelism</span>
-            <span class="tag">CUDA C++</span>
-            <span class="tag">SIMT</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <a href="blogs/1.gpu_basics_plain.html" style="font-size: 0.82rem; color: var(--text-muted); text-decoration: none;">Plain HTML</a>
-            <a href="blogs/gpu_basics.html" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
-              Read Article &rarr;
-            </a>
-          </div>
-        </div>
-      </article>
+<footer>
+  <p>&copy; 2026 Anthony Njenga · <a href="https://github.com/Cohegen">github.com/Cohegen</a></p>
+</footer>
 
-      <!-- Upcoming Writeups Placeholder -->
-      <div class="card" style="border-style: dashed; background: transparent; text-align: center; padding: 2.5rem 1.5rem;">
-        <h3 style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 0.5rem;">Upcoming Technical Writeups</h3>
-        <p style="color: #6e7681; font-size: 0.9rem; max-width: 500px; margin: 0 auto;">
-          Currently drafting deep dives on <em>Work-Efficient Parallel Scan in CUDA</em> and <em>Building Superscalar Out-of-Order CPU Pipelines in C++20</em>.
-        </p>
-      </div>
-    </section>
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector('nav a[href="#' + name + '"]').classList.add('active');
+  window.location.hash = name;
+}
+window.addEventListener('DOMContentLoaded', () => {
+  const h = window.location.hash.replace('#','');
+  if (['home','blogs','projects'].includes(h)) switchTab(h);
+});
+window.addEventListener('hashchange', () => {
+  const h = window.location.hash.replace('#','');
+  if (['home','blogs','projects'].includes(h)) switchTab(h);
+});
+</script>
 
-    <!-- ========================================== -->
-    <!-- TAB 3: PROJECTS -->
-    <!-- ========================================== -->
-    <section id="tab-projects" class="tab-content">
-      <h1 class="section-title">Featured Projects</h1>
-      <p class="section-subtitle">Low-level systems, processor simulators, CUDA kernels, and machine learning engines built from scratch.</p>
-
-      <div class="grid">
-
-        <!-- Project 1: CPU.cpp -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <a href="https://github.com/Cohegen/CPU.cpp" target="_blank" rel="noopener noreferrer" class="card-title">
-                CPU.cpp
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 2h8.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm0 1.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25h-8.5ZM9.5 5.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-.19l-2.72 2.72a.75.75 0 1 1-1.06-1.06L9.94 6.75H9.75a.75.75 0 0 1-.75-.75Z"></path></svg>
-              </a>
-              <span class="tag" style="color: #79c0ff; border-color: rgba(88,166,255,0.4);">Featured</span>
-            </div>
-            <div class="card-tagline">Microarchitectural CPU Simulator &amp; Execution Models</div>
-            <p class="card-desc">
-              Implements and benchmarks CPU microarchitecture designs and execution models in modern C++. Spans foundational sequential architectures (single-cycle and multi-cycle execution) through instruction-level parallelism (ILP) with superscalar out-of-order execution pipelines — featuring instruction fetch, dispatch, Reorder Buffer (ROB), Issue Queue, Physical Register File (PRF), and branch recovery mechanisms.
-            </p>
-          </div>
-          <div class="card-footer">
-            <div class="tags">
-              <span class="tag">Modern C++</span>
-              <span class="tag">Computer Architecture</span>
-              <span class="tag">Superscalar</span>
-              <span class="tag">Out-of-Order</span>
-              <span class="tag">ILP</span>
-            </div>
-            <a href="https://github.com/Cohegen/CPU.cpp" target="_blank" rel="noopener noreferrer" class="card-link">
-              View on GitHub &rarr;
-            </a>
-          </div>
-        </div>
-
-        <!-- Project 2: Logic.cpp -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <a href="https://github.com/Cohegen/Logic.cpp" target="_blank" rel="noopener noreferrer" class="card-title">
-                Logic.cpp
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 2h8.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm0 1.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25h-8.5ZM9.5 5.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-.19l-2.72 2.72a.75.75 0 1 1-1.06-1.06L9.94 6.75H9.75a.75.75 0 0 1-.75-.75Z"></path></svg>
-              </a>
-            </div>
-            <div class="card-tagline">Modern C++20 Digital Hardware Simulation Library</div>
-            <p class="card-desc">
-              A modern C++20 hardware simulation framework designed for modeling, prototyping, and simulating digital logic circuits from fundamental electrical primitives to complex architecture components. Models wires, buses, clocks, tri-state buffers, logic gates, combinational datapaths, and sequential storage elements that serve as the bedrock for high-level processor architectures.
-            </p>
-          </div>
-          <div class="card-footer">
-            <div class="tags">
-              <span class="tag">C++20</span>
-              <span class="tag">Hardware Simulation</span>
-              <span class="tag">Digital Logic</span>
-              <span class="tag">Datapaths</span>
-            </div>
-            <a href="https://github.com/Cohegen/Logic.cpp" target="_blank" rel="noopener noreferrer" class="card-link">
-              View on GitHub &rarr;
-            </a>
-          </div>
-        </div>
-
-        <!-- Project 3: Kernels -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <a href="https://github.com/Cohegen/Kernels" target="_blank" rel="noopener noreferrer" class="card-title">
-                Kernels
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 2h8.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm0 1.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25h-8.5ZM9.5 5.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-.19l-2.72 2.72a.75.75 0 1 1-1.06-1.06L9.94 6.75H9.75a.75.75 0 0 1-.75-.75Z"></path></svg>
-              </a>
-              <span class="tag" style="color: #7ee787; border-color: rgba(126,231,135,0.4);">CUDA</span>
-            </div>
-            <div class="card-tagline">High-Performance CUDA Kernels from Scratch</div>
-            <p class="card-desc">
-              Custom GPU kernel implementations tested and profiled on NVIDIA hardware (e.g., Tesla T4). Explores work-efficient parallel algorithms including Blelloch scan, single-pass parallel prefix scan with decoupled look-back, tree-based parallel reductions, and memory coalescing optimization.
-            </p>
-          </div>
-          <div class="card-footer">
-            <div class="tags">
-              <span class="tag">CUDA C++</span>
-              <span class="tag">Parallel Algorithms</span>
-              <span class="tag">GPU Computing</span>
-              <span class="tag">HPC</span>
-            </div>
-            <a href="https://github.com/Cohegen/Kernels" target="_blank" rel="noopener noreferrer" class="card-link">
-              View on GitHub &rarr;
-            </a>
-          </div>
-        </div>
-
-        <!-- Project 4: NanoTorch -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <a href="https://github.com/Cohegen/NanoTorch" target="_blank" rel="noopener noreferrer" class="card-title">
-                NanoTorch
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 2h8.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm0 1.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25h-8.5ZM9.5 5.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-.19l-2.72 2.72a.75.75 0 1 1-1.06-1.06L9.94 6.75H9.75a.75.75 0 0 1-.75-.75Z"></path></svg>
-              </a>
-            </div>
-            <div class="card-tagline">Minimalist Deep Learning &amp; Autodiff Framework</div>
-            <p class="card-desc">
-              A lightweight, ground-up deep learning library with a dynamic computation graph and reverse-mode automatic differentiation (autodiff). Includes implementations of core neural network modules, attention mechanisms, and model quantization strategies.
-            </p>
-          </div>
-          <div class="card-footer">
-            <div class="tags">
-              <span class="tag">Deep Learning</span>
-              <span class="tag">Autodiff</span>
-              <span class="tag">Tensor Engine</span>
-              <span class="tag">Quantization</span>
-            </div>
-            <a href="https://github.com/Cohegen/NanoTorch" target="_blank" rel="noopener noreferrer" class="card-link">
-              View on GitHub &rarr;
-            </a>
-          </div>
-        </div>
-
-        <!-- Project 5: Computer Vision Models -->
-        <div class="card">
-          <div>
-            <div class="card-header">
-              <a href="https://github.com/Cohegen/Computer-Vision-Models" target="_blank" rel="noopener noreferrer" class="card-title">
-                Computer Vision Models
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M3.75 2h8.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm0 1.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25h-8.5ZM9.5 5.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-.19l-2.72 2.72a.75.75 0 1 1-1.06-1.06L9.94 6.75H9.75a.75.75 0 0 1-.75-.75Z"></path></svg>
-              </a>
-            </div>
-            <div class="card-tagline">Architectures &amp; Implementations from Scratch</div>
-            <p class="card-desc">
-              In-depth implementations, layer modularization, and benchmarking of classical and modern computer vision architectures: DeepLabV3 (atrous spatial pyramid pooling), UNet, DenseNet-121, MobileNetV1 &amp; V2, and SqueezeNet.
-            </p>
-          </div>
-          <div class="card-footer">
-            <div class="tags">
-              <span class="tag">Computer Vision</span>
-              <span class="tag">PyTorch</span>
-              <span class="tag">DeepLabV3</span>
-              <span class="tag">UNet</span>
-              <span class="tag">MobileNet</span>
-            </div>
-            <a href="https://github.com/Cohegen/Computer-Vision-Models" target="_blank" rel="noopener noreferrer" class="card-link">
-              View on GitHub &rarr;
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <p>
-      &copy; 2026 <strong>Anthony Njenga</strong> &bull; Systems &amp; Performance Engineering
-    </p>
-    <p style="margin-top: 0.35rem;">
-      <a href="https://github.com/Cohegen" target="_blank" rel="noopener noreferrer">github.com/Cohegen</a>
-    </p>
-  </footer>
-
-  <!-- Tab Switching Script -->
-  <script>
-    function switchTab(tabName) {
-      // Hide all tabs
-      const tabs = document.querySelectorAll('.tab-content');
-      tabs.forEach(tab => tab.classList.remove('active'));
-
-      // Remove active state from all nav buttons
-      const navButtons = document.querySelectorAll('.nav-tab');
-      navButtons.forEach(btn => btn.classList.remove('active'));
-
-      // Activate target tab and button
-      const targetTab = document.getElementById('tab-' + tabName);
-      const targetBtn = document.getElementById('tab-btn-' + tabName);
-      if (targetTab && targetBtn) {
-        targetTab.classList.add('active');
-        targetBtn.classList.add('active');
-        window.location.hash = tabName;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-
-    // Handle hash on page load (e.g. #blogs, #projects)
-    window.addEventListener('DOMContentLoaded', () => {
-      const hash = window.location.hash.replace('#', '');
-      if (['home', 'blogs', 'projects'].includes(hash)) {
-        switchTab(hash);
-      }
-    });
-
-    // Handle browser back/forward buttons
-    window.addEventListener('hashchange', () => {
-      const hash = window.location.hash.replace('#', '');
-      if (['home', 'blogs', 'projects'].includes(hash)) {
-        switchTab(hash);
-      }
-    });
-  </script>
 </body>
 </html>
