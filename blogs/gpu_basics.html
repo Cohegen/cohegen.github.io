@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding GPU Basics | Antonius Cohegen</title>
+  <meta name="description" content="An introduction to GPU vs CPU architecture, parallel execution models, thread hierarchies, and CUDA vector addition." />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79c0ff;
+      --badge-bg: #21262d;
+      --badge-border: #363b42;
+      --code-bg: #161b22;
+      --nav-bg: rgba(13, 17, 23, 0.85);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.75;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header & Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .nav-container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      background: var(--badge-bg);
+      border-color: var(--accent);
+      color: var(--accent-hover);
+    }
+
+    /* Article layout */
+    main {
+      flex: 1;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+
+    .article-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+      color: #ffffff;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+      color: #ffffff;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: #e6edf3;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: #c9d1d9;
+      font-size: 1.05rem;
+    }
+
+    ul {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+      color: #c9d1d9;
+    }
+
+    li {
+      margin-bottom: 0.6rem;
+      font-size: 1.02rem;
+    }
+
+    strong {
+      color: #ffffff;
+    }
+
+    .image-container {
+      margin: 2rem 0;
+      padding: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .image-caption {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+      font-family: var(--font-mono);
+    }
+
+    pre {
+      background: #090d13;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      margin: 1.5rem 0;
+      color: #e6edf3;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+    }
+
+    p code, li code {
+      background: var(--badge-bg);
+      border: 1px solid var(--badge-border);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: #ff7b72;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="../#blogs" class="brand">Antonius Cohegen</a>
+      <a href="../#blogs" class="back-btn">&larr; Back to Blogs</a>
+    </div>
+  </header>
+
+  <!-- Article -->
+  <main>
+    <article>
+      <div class="article-header">
+        <div class="article-meta">
+          <span>Published October 2026</span>
+          <span>&bull;</span>
+          <span class="tag">GPU Architecture</span>
+          <span class="tag">CUDA</span>
+          <span class="tag">Systems</span>
+        </div>
+        <h1>Understanding GPU Basics</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 0;">
+          By <strong>Antonius Cohegen</strong> &bull; Systems &amp; Performance Engineering
+        </p>
+      </div>
+
+      <p>As you're probably aware, we're living in the age of the AI boom. Large Language Models (LLMs) like ChatGPT, Claude, and DeepSeek are widely used by millions of people. However, have you ever sat down and asked yourself what kind of hardware these LLMs run on?</p>
+
+      <p>These LLMs primarily run on specialized processors known as GPUs (Graphics Processing Units). In this blog, my goal is to help you, the reader, understand what a GPU is and how it differs from a CPU (Central Processing Unit).</p>
+
+      <p>Without further ado, let's begin our quest to understand what a GPU is.</p>
+
+      <h2>1. GPU vs CPU</h2>
+
+      <p>Think of a CPU as a master chef who can prepare a variety of meals, such as ugali and cabbage, rice and stew, fried chicken, etc. At the same time, think of a GPU as thousands of chefs who can work together to prepare large quantities of the same meal, such as ugali and cabbage.</p>
+
+      <p>Let's go back to your high school days. I'm pretty sure the majority of you had ugali and cabbage for lunch.</p>
+
+      <p>Imagine you're a school principal. Would you hire one master chef or, say, 20 chefs who can prepare ugali and cabbage quickly enough to meet the demands of the high school students?</p>
+
+      <p>The answer is pretty simple. You would hire those 20 chefs since they could prepare the meals much faster than one master chef.</p>
+
+      <p>This is the basic idea behind GPUs: <strong>performing many similar operations in parallel.</strong></p>
+
+      <h3>CPU and GPU Architecture</h3>
+
+      <div class="image-container">
+        <img src="../assets/diagram.png" alt="CPU vs GPU Architecture">
+        <div class="image-caption">Figure 1: High-level comparison of CPU vs GPU architecture and execution cores.</div>
+      </div>
+
+      <ul>
+        <li>From our analogy in the previous section, we can think of the chefs as representing the cores in the diagram above.</li>
+        <li>These cores are responsible for executing instructions. You can think of instructions as commands that tell a processor to perform a particular operation.</li>
+        <li>CPUs typically have fewer, more powerful cores, while GPUs have many simpler execution cores designed to handle large amounts of parallel work.</li>
+      </ul>
+
+      <p>Say we have two vectors containing 100 elements each. Between the CPU and GPU, which one do you think would be faster at adding these vectors?</p>
+
+      <p>A GPU is designed to perform operations on many elements simultaneously, making it particularly suitable for this kind of task.</p>
+
+      <p>However, for such a small workload, a CPU might actually be faster because transferring data to the GPU and launching a kernel introduces additional overhead/ more work.</p>
+
+      <p>For now, let's focus on how both processors execute the addition.</p>
+
+      <h3>Execution Process</h3>
+
+      <p>Let's consider a simplified scenario in which our GPU has 100 cores and our CPU has only one core. We're tasked with adding two vectors containing 100 elements each.</p>
+
+      <p>Let's name these vectors A and B. Their sum will be stored in vector C.</p>
+
+      <p>For our CPU code, we'll use an ordinary <code>for</code> loop, as shown below.</p>
+
+<pre><code>void sequential_vector_addition(float* A, float* B, float* C, int N)
+{
+    for (int i = 0; i &lt; N; ++i)
+    {
+        C[i] = A[i] + B[i];
+    }
+}</code></pre>
+
+      <p>From the code above, we can see that the <code>for</code> loop performs 100 iterations when <code>N = 100</code>. This means the loop goes through 100 iterations to calculate the sum of the two vectors and store the results in C.</p>
+
+      <p>For simplicity, we'll assume that each iteration is executed sequentially.</p>
+
+      <p>Our GPU code will be written using CUDA, a parallel computing platform and programming model developed by NVIDIA.</p>
+
+      <p>The code is shown below:</p>
+
+<pre><code>__global__ void vector_addition(float* A, float* B, float* C, int N)
+{
+    int index = threadIdx.x;
+
+    if (index &lt; N)
+    {
+        C[index] = A[index] + B[index];
+    }
+}</code></pre>
+
+      <ul>
+        <li>From the code above, I've written a function known as a <strong>kernel</strong>. A kernel is a function that executes on the GPU. The <code>__global__</code> keyword indicates that the function is a GPU kernel that can be launched from the CPU.</li>
+        <li>The arguments of our kernel are vectors A, B, and C, along with the number of elements, <code>N</code>, which is 100 in our example.</li>
+        <li>There's also a variable called <code>index</code>, which is assigned the value of <code>threadIdx.x</code>. This represents the index of an individual thread within a block along the x-axis.</li>
+        <li>Each thread is responsible for calculating the sum of one pair of elements from vectors A and B.</li>
+        <li>The <code>if</code> statement ensures that only threads whose indices are less than <code>N</code> perform the addition. This prevents threads from accessing elements outside our vectors.</li>
+        <li>The line <code>C[index] = A[index] + B[index];</code> means that threads with indices from 0 to 99 will each calculate the sum of one pair of elements.</li>
+      </ul>
+
+      <p>For this example, we'll assume that we launch a single block containing 100 threads.</p>
+
+      <p>Unlike our sequential CPU example, where one thread performs 100 iterations, our GPU kernel allows 100 threads to perform the additions in parallel.</p>
+
+      <p>This means the GPU can process multiple elements simultaneously instead of relying on a single thread to perform every addition.</p>
+
+      <p>However, this doesn't necessarily mean all 100 operations execute at exactly the same instant or that the GPU will always be faster.</p>
+
+      <p>The main takeaway is that <strong>GPUs are designed to achieve high throughput by executing many similar operations in parallel.</strong></p>
+
+      <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;">
+        <a href="../#blogs" class="back-btn">&larr; Back to all blogs</a>
+        <a href="https://github.com/Cohegen" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none; font-size: 0.9rem;">
+          Follow on GitHub &rarr;
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 <strong>Antonius Cohegen</strong> &bull; Systems &amp; Performance Engineering</p>
+  </footer>
+
+</body>
+</html>
