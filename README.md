@@ -20,7 +20,7 @@ This is the basic idea behind GPUs: performing many similar operations in parall
 
 ### CPU and GPU Architecture
 
-![CPU vs GPU Architecture](diagram.png)
+![CPU vs GPU Architecture](assets/diagram.png)
 
 * From our analogy in the previous section, we can think of the chefs as representing the cores in the diagram above.
 * These cores are responsible for executing instructions. You can think of instructions as commands that tell a processor to perform a particular operation.

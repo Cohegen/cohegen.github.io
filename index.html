@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anthony Njenga</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.7; color: #222; background: white; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1, h2, h3 { line-height: 1.3; color: #111; }
+    h1 { font-size: 2rem; }
+    h2 { margin-top: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+    h3 { margin-top: 1.5rem; }
+    a { color: #0969da; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    nav { margin-bottom: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.75rem; }
+    nav a { margin-right: 1.5rem; font-weight: bold; }
+    nav a.active { border-bottom: 2px solid #0969da; padding-bottom: 0.5rem; }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .project { margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #ddd; border-radius: 6px; }
+    .project h3 { margin-top: 0; }
+    .project p { margin: 0.4rem 0; }
+    .tags span { font-size: 0.8rem; background: #f5f5f5; border: 1px solid #ddd; padding: 2px 6px; border-radius: 3px; margin-right: 4px; }
+    .blog-entry { margin-bottom: 1.5rem; padding: 1rem; border: 1px solid #ddd; border-radius: 6px; }
+    .blog-entry h3 { margin-top: 0; }
+    .blog-meta { font-size: 0.85rem; color: #666; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.85rem; color: #666; }
+  </style>
+</head>
+<body>
+
+<h1>Anthony Njenga</h1>
+<nav>
+  <a href="#home" class="active" onclick="switchTab('home')">Home</a>
+  <a href="#blogs" onclick="switchTab('blogs')">Blogs</a>
+  <a href="#projects" onclick="switchTab('projects')">Projects</a>
+  <a href="https://github.com/Cohegen" target="_blank">GitHub</a>
+</nav>
+
+<!-- Home Tab -->
+<div id="tab-home" class="tab active">
+  <h2>About Me</h2>
+  <p>Hi, I'm <strong>Anthony Njenga</strong>. I'm an aspiring <strong>systems and performance engineer</strong> with a deep interest in computer architecture and GPU computing.</p>
+  <p>I'm passionate about writing low-level software that extracts maximum hardware efficiency — from cycle-accurate CPU microarchitecture simulations and hardware logic design in modern C++ to high-throughput CUDA kernels and deep learning systems from scratch.</p>
+  <p>I'm aspiring to work in <strong>Systems &amp; Performance Engineering</strong>, <strong>High-Performance Computing (HPC)</strong>, and <strong>GPU Kernel Engineering</strong>.</p>
+
+  <h2>What I Work On</h2>
+  <ul>
+    <li><strong>Computer Architecture &amp; CPU Simulation</strong> — Designing and modeling processor microarchitectures in C++20: superscalar out-of-order execution, branch prediction, fetch/dispatch units, Reorder Buffers, Issue Queues, and Physical Register Files.</li>
+    <li><strong>GPU Computing &amp; CUDA</strong> — Writing and profiling high-throughput CUDA kernels on NVIDIA hardware. Parallel prefix scans, reductions, and memory coalescing optimizations.</li>
+    <li><strong>Digital Logic &amp; Hardware Modeling</strong> — Simulating fundamental hardware building blocks from the ground up: wires, tri-state buses, clock domains, combinational datapaths, and sequential logic circuits.</li>
+    <li><strong>Deep Learning Systems</strong> — Building lightweight tensor computation engines, reverse-mode automatic differentiation, attention layers, and model quantization strategies from scratch.</li>
+  </ul>
+</div>
+
+<!-- Blogs Tab -->
+<div id="tab-blogs" class="tab">
+  <h2>Blogs</h2>
+
+  <div class="blog-entry">
+    <h3><a href="blogs/gpu_basics.html">Understanding GPU Basics</a></h3>
+    <p class="blog-meta">October 2026 · GPU Architecture · CUDA</p>
+    <p>An intuitive breakdown of what GPUs are and how they differ from CPUs. Walks through core hierarchies and a CUDA vector addition kernel.</p>
+    <p><a href="blogs/gpu_basics.html">Read article →</a></p>
+  </div>
+</div>
+
+<!-- Projects Tab -->
+<div id="tab-projects" class="tab">
+  <h2>Projects</h2>
+
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/CPU.cpp" target="_blank">CPU.cpp</a></h3>
+    <p>Implements and benchmarks CPU microarchitecture designs in modern C++. Spans single-cycle and multi-cycle execution through superscalar out-of-order pipelines with fetch, dispatch, Reorder Buffer, Issue Queue, Physical Register File, and branch recovery.</p>
+    <div class="tags"><span>C++</span> <span>Computer Architecture</span> <span>Superscalar</span> <span>Out-of-Order</span></div>
+  </div>
+
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/Logic.cpp" target="_blank">Logic.cpp</a></h3>
+    <p>A modern C++20 hardware simulation library for modeling digital logic circuits from electrical primitives to complex architecture components. Models wires, buses, clocks, tri-state buffers, gates, combinational datapaths, and sequential storage elements.</p>
+    <div class="tags"><span>C++20</span> <span>Hardware Simulation</span> <span>Digital Logic</span></div>
+  </div>
+
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/Kernels" target="_blank">Kernels</a></h3>
+    <p>Custom GPU kernel implementations tested on NVIDIA hardware (Tesla T4). Includes work-efficient parallel prefix scans (Blelloch &amp; single-pass with decoupled look-back), tree-based reductions, and memory coalescing optimizations.</p>
+    <div class="tags"><span>CUDA</span> <span>Parallel Algorithms</span> <span>GPU Computing</span> <span>HPC</span></div>
+  </div>
+
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/NanoTorch" target="_blank">NanoTorch</a></h3>
+    <p>A lightweight, ground-up deep learning library with a dynamic computation graph and reverse-mode automatic differentiation. Includes core neural network modules, attention mechanisms, and model quantization strategies.</p>
+    <div class="tags"><span>Deep Learning</span> <span>Autodiff</span> <span>Tensor Engine</span> <span>Quantization</span></div>
+  </div>
+
+  <div class="project">
+    <h3><a href="https://github.com/Cohegen/Computer-Vision-Models" target="_blank">Computer Vision Models</a></h3>
+    <p>Implementations and benchmarking of classical and modern computer vision architectures: DeepLabV3, UNet, DenseNet-121, MobileNetV1 &amp; V2, and SqueezeNet.</p>
+    <div class="tags"><span>Computer Vision</span> <span>PyTorch</span> <span>DeepLabV3</span> <span>UNet</span> <span>MobileNet</span></div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Anthony Njenga · <a href="https://github.com/Cohegen">github.com/Cohegen</a></p>
+</footer>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector('nav a[href="#' + name + '"]').classList.add('active');
+  window.location.hash = name;
+}
+window.addEventListener('DOMContentLoaded', () => {
+  const h = window.location.hash.replace('#','');
+  if (['home','blogs','projects'].includes(h)) switchTab(h);
+});
+window.addEventListener('hashchange', () => {
+  const h = window.location.hash.replace('#','');
+  if (['home','blogs','projects'].includes(h)) switchTab(h);
+});
+</script>
+
+</body>
+</html>
