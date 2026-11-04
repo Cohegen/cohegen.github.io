@@ -53,4 +53,11 @@ int index = threadIdx.x
 
 - So we have 2 vectors each of length 1000, but we have one threadblock with 100 threads, since our GPU has adequate resources we can invoke other 9 threadBlocks each with 100 threads to join the bandwagon of performing the addition.
 - Since vector are 1-D (one dimensional) arrays we would have the following identifiers `blockIdx.x` `blockDim.x` and `threadIdx.x`. There have the  suffix `.x` implying our threads and blocks are along the X-axis.
-- Say we have a thread in
+- Now we have 10 blocks. The indices of these blocks follow the indexing criteria in programming meaning our first index is always `0` and our is `N-1` in our case 10-1=9. The same also applies to threads
+
+- Given a thread with an index / threadIdx.x of `5` in a threadBlock with index/blockIdx.x `6` we want to know which element in our vectors A and B our thread will be responsible for. To find this we use the formular below:
+```
+index = blockIdx.x*blockDim.x + threadIdx.x
+index = 6*100+5 = 605
+```
+- Meaning $Thread_{5}$ in $Block_{6}$ will responsible for conducting the sum of A[605] + B[605]  and write it to C[605].
