@@ -1,4 +1,4 @@
-# Unpacking the CUDA Coordinate Mapping
+# 2. Unpacking the CUDA Coordinate Mapping
 
 ![out:](assets/ralph_wiggum.png)
 
@@ -77,7 +77,7 @@ int index = threadIdx.x;
 - So, we have two vectors, each with 1,000 elements, but initially, we have only one thread block containing 100 threads. Since our GPU has adequate resources, we can invoke nine additional thread blocks, each containing 100 threads, to join the bandwagon and perform the addition.
 
   These thread blocks collectively form what is known as a **Grid**. A grid is simply a collection of thread blocks launched by a kernel.
-  This can be reprensented in the diagram belo:
+  This can be reprensented in the diagram below:
 
   ![out:](assets/block.png)
 
