@@ -79,7 +79,7 @@ int index = threadIdx.x;
   These thread blocks collectively form what is known as a **Grid**. A grid is simply a collection of thread blocks launched by a kernel.
   This can be reprensented in the diagram belo:
 
-  ![out:](block.png)
+  ![out:](assets/block.png)
 
 - Since vectors are 1-D (one-dimensional) arrays, we would have the following identifiers: `blockIdx.x`, `blockDim.x`, and `threadIdx.x`. They have the suffix `.x`, representing the X dimension of CUDA's indexing system.
 
