@@ -18,7 +18,7 @@ int index = threadIdx.x;
 
 Now, back to our dear friend Ralph. We've decided to picture him as an individual thread. However, Ralph is on a bus, as we can clearly see. And that bus is expected to have many students on board.
 
-These other students could, for example, be other characters like Bart, Lisa, or even Milhouse. Each student represents an individual thread, which means the bus itself represents something known as a **Thread Block**, or simply a **block**.
+These other students could be , for example, other characters like Bart, Lisa, or even Milhouse. Each student represents an individual thread, which means the bus itself represents something known as a **Thread Block**, or simply a **block**.
 
 - To put it simply, we can think of a block as a container or space that holds multiple threads.
 
@@ -77,6 +77,9 @@ int index = threadIdx.x;
 - So, we have two vectors, each with 1,000 elements, but initially, we have only one thread block containing 100 threads. Since our GPU has adequate resources, we can invoke nine additional thread blocks, each containing 100 threads, to join the bandwagon and perform the addition.
 
   These thread blocks collectively form what is known as a **Grid**. A grid is simply a collection of thread blocks launched by a kernel.
+  This can be reprensented in the diagram belo:
+
+  ![out:](block.png)
 
 - Since vectors are 1-D (one-dimensional) arrays, we would have the following identifiers: `blockIdx.x`, `blockDim.x`, and `threadIdx.x`. They have the suffix `.x`, representing the X dimension of CUDA's indexing system.
 
