@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Unpacking the CUDA Coordinate Mapping</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.7;
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1, h2 {
+            line-height: 1.3;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 25px auto;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+        }
+
+        p {
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>2. Unpacking the CUDA Coordinate Mapping</h1>
+
+    <img src="assets/ralph_wiggum.png" alt="Ralph Wiggum">
+
+    <p>
+        I'm sure all of you have watched <em>The Simpsons</em>,
+        probably during your childhood. In the picture above, we can
+        see a character known as <strong>Ralph Wiggum</strong>.
+        In this scene, he utters some well-known words:
+        "I'm in danger."
+    </p>
+
+    <p>
+        However, in our case, the caption reads, "Where am I?"
+    </p>
+
+    <p>
+        Let's picture Ralph as an individual thread whose sole task
+        is to add a pair of elements from vectors A and B and write
+        the result into vector C.
+    </p>
+
+    <ul>
+        <li>
+            In the previous blog,
+            <a href="https://cohegen.github.io/blogs/gpu_basics.html">
+                "GPU Basics"
+            </a>,
+            there was a line of code that looked like this:
+        </li>
+    </ul>
+
+    <pre><code class="language-cpp">int index = threadIdx.x;</code></pre>
+
+    <ul>
+        <li>
+            In this blog, we'll embark on a quest to understand what
+            that line of code really means.
+        </li>
+    </ul>
+
+    <p>
+        Now, back to our dear friend Ralph. We've decided to picture
+        him as an individual thread. However, Ralph is on a bus,
+        as we can clearly see. And that bus is expected to have
+        many students on board.
+    </p>
+
+    <p>
+        These other students could be, for example, other characters
+        like Bart, Lisa, or even Milhouse. Each student represents
+        an individual thread, which means the bus itself represents
+        something known as a <strong>Thread Block</strong>, or simply
+        a <strong>block</strong>.
+    </p>
+
+    <ul>
+        <li>
+            To put it simply, we can think of a block as a container
+            or space that holds multiple threads.
+        </li>
+    </ul>
+
+
+    <h2>Mapping Individual Threads</h2>
+
+    <ul>
+        <li>
+            Let's go back in time to our primary school years.
+            During school trips, if you had paid for the trip,
+            you would be assigned a bus to travel in, as well as
+            a seat number on that bus.
+        </li>
+
+        <li>
+            Let's say your school had hired around five buses,
+            and each bus could accommodate approximately
+            30 students.
+        </li>
+
+        <li>
+            In case of a disciplinary issue involving a particular
+            student during the trip, the teacher in charge would
+            first need to know which bus the student was on and
+            what their seat number was.
+        </li>
+
+        <li>
+            Since there were five buses, let's assign each bus
+            a unique number: <code>0, 1, 2, 3, 4</code>.
+        </li>
+
+        <li>
+            We can equate these numbers with a CUDA variable known
+            as <code>blockIdx</code>. <code>blockIdx</code>
+            represents the bus number.
+        </li>
+
+        <li>
+            Each bus has 30 students in total. We can equate the
+            total capacity of each bus with the CUDA variable
+            <code>blockDim</code>. <code>blockDim</code> simply
+            answers the question: How many threads or students
+            does each bus/block have?
+        </li>
+
+        <li>
+            Since every student on each bus has a seat number,
+            we can assign that number to <code>threadIdx</code>.
+        </li>
+
+        <li>
+            However, let's say we wanted to retrieve some general
+            information about a student, such as their unique number.
+            Suppose a particular student has the following information:
+        </li>
+    </ul>
+
+    <pre><code class="language-cpp">bus_number/blockIdx.x = 3
+seat_number/threadIdx.x = 20</code></pre>
+
+    <ul>
+        <li>
+            Since <code>blockDim.x = 30</code>, we can determine
+            the student's unique number using the formula below:
+        </li>
+    </ul>
+
+    <pre><code class="language-cpp">unique_number = bus_number * blockDim.x + seat_number</code></pre>
+
+    <p>Which translates into:</p>
+
+    <pre><code class="language-cpp">unique_number = blockIdx.x * blockDim.x + threadIdx.x
+unique_number = 3 * 30 + 20 = 110</code></pre>
+
+    <ul>
+        <li>
+            So, our student's unique number is <code>110</code>.
+        </li>
+    </ul>
+
+
+    <h2>Mapping into 1-D Arrays</h2>
+
+    <p>
+        In the kernel from the previous blog, we mapped our index
+        as follows:
+    </p>
+
+    <pre><code class="language-cpp">int index = threadIdx.x;</code></pre>
+
+    <ul>
+        <li>
+            Note that we aren't using <code>blockIdx</code> or
+            <code>blockDim</code> here. We were using only one
+            thread block, and we assumed that it had 100 threads
+            capable of performing parallel vector addition on
+            vectors A and B and writing the results into C.
+        </li>
+
+        <li>
+            However, what if we were performing vector addition
+            on vectors A and B, each containing 1,000 elements?
+            Our individual thread block would only perform the
+            addition of the first 100 elements, leaving the
+            remaining 900 unattended.
+        </li>
+    </ul>
+
+    <p>
+        However, there's an optimization we can introduce to make
+        our thread block capable of handling the addition of the
+        two vectors. We'll explore this later.
+    </p>
+
+    <ul>
+        <li>
+            So, we have two vectors, each with 1,000 elements,
+            but initially, we have only one thread block containing
+            100 threads. Since our GPU has adequate resources,
+            we can invoke nine additional thread blocks, each
+            containing 100 threads, to join the bandwagon and
+            perform the addition.
+        </li>
+    </ul>
+
+    <p>
+        These thread blocks collectively form what is known as
+        a <strong>Grid</strong>. A grid is simply a collection
+        of thread blocks launched by a kernel.
+    </p>
+
+    <p>
+        This can be represented in the diagram below:
+    </p>
+
+    <img src="assets/block.png" alt="CUDA thread blocks forming a grid">
+
+    <ul>
+        <li>
+            Since vectors are 1-D (one-dimensional) arrays,
+            we would have the following identifiers:
+            <code>blockIdx.x</code>, <code>blockDim.x</code>,
+            and <code>threadIdx.x</code>. They have the suffix
+            <code>.x</code>, representing the X dimension of
+            CUDA's indexing system.
+        </li>
+
+        <li>
+            Now we have 10 blocks. The indices of these blocks
+            follow the indexing convention used in programming,
+            meaning that our first index is always <code>0</code>,
+            while the last index is <code>N-1</code>. In our case,
+            that would be <code>10-1 = 9</code>. The same also
+            applies to threads.
+        </li>
+
+        <li>
+            Given a thread with an index (<code>threadIdx.x</code>)
+            of <code>5</code> in a thread block with an index
+            (<code>blockIdx.x</code>) of <code>6</code>, we want
+            to determine which element in vectors A and B that
+            thread will be responsible for processing.
+        </li>
+    </ul>
+
+    <p>
+        To find this, we use the formula below:
+    </p>
+
+    <pre><code class="language-cpp">index = blockIdx.x * blockDim.x + threadIdx.x
+index = 6 * 100 + 5 = 605</code></pre>
+
+    <ul>
+        <li>
+            This means that <strong>Thread 5 in Block 6</strong>
+            will be responsible for calculating the sum of
+            <code>A[605] + B[605]</code> and writing the result
+            into <code>C[605]</code>.
+        </li>
+
+        <li>
+            Thus, for vectors A and B with 1,000 elements each,
+            our vector addition kernel evolves into:
+        </li>
+    </ul>
+
+    <pre><code class="language-cpp">__global__ void vector_addition(float* A, float* B, float* C, int N)
+{
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (index &lt; N)
+    {
+        C[index] = A[index] + B[index];
+    }
+}</code></pre>
+
+    <ul>
+        <li>
+            Here, <code>N = 1000</code>.
+        </li>
+
+        <li>
+            The boundary check <code>if (index &lt; N)</code>
+            ensures that threads whose calculated indices exceed
+            the size of our vectors do not attempt to access
+            memory outside their allocated bounds.
+        </li>
+    </ul>
+
+</body>
+
+</html>
